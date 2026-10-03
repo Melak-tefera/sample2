@@ -8,32 +8,71 @@ const HomePage({super.key});
 }
 
 class _HomePageState extends State<HomePage> {
+  final controller= ScrollController();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    controller.addListener(onscroll);
+  }
+  void onscroll(){
+    print(controller.offset);
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    controller.removeListener(onscroll);
+    controller.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          
-          SliverPersistentHeader(
-            pinned:true,
-            delegate: Mainheader(),
-          ),
-          SliverList(
-            delegate:SliverChildBuilderDelegate(
-              (context, index){
-                return ListTile(
-                  leading: CircleAvatar(
-                    child: Text('${index + 1}'),
-                  ),
-                  title: Text('Product ${index + 1}'),
-                  subtitle: const Text('Product description'),
-                );
-              },
-              childCount: 100
-            ) ,
+      body: Stack(
+        children: [
+         CustomScrollView(
+          controller: controller,
+          slivers: [
             
-          )
+            SliverPersistentHeader(
+              pinned:true,
+              delegate: Mainheader(),
+            ),
+            SliverList(
+              delegate:SliverChildBuilderDelegate(
+                (context, index){
+                  return ListTile(
+                    leading: CircleAvatar(
+                      child: Text('${index + 1}'),
+                    ),
+                    title: Text('Product ${index + 1}'),
+                    subtitle: const Text('Product description'),
+                  );
+                },
+                childCount: 100
+              ) ,
+              
+            ),
+            
+               
+          
+        
+          ],
+        ),
+
+        Positioned(
+          right: 16,
+          top: MediaQuery.of(context).size.height/2-90,
+          child: Column(
+                  
+                  children: [
+                    FloatingActionButton(onPressed: (){}, child: Icon(Icons.arrow_upward),),
+                    SizedBox(height: 15,),
+                    FloatingActionButton(onPressed: (){}, child: Icon(Icons.arrow_downward),)
+                  ],
+                ),
+        ),
 
         ],
       ),
