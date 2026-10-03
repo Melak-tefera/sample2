@@ -9,6 +9,12 @@ const HomePage({super.key});
 
 class _HomePageState extends State<HomePage> {
   final controller= ScrollController();
+  double op1=0.0;
+  double op2=0.0;
+  double previousOffset = 0.0;
+  double movedDown = 0.0; 
+  double movedUp = 0.0;  
+  double threshold = 100.0;
   @override
   void initState() {
     // TODO: implement initState
@@ -16,8 +22,46 @@ class _HomePageState extends State<HomePage> {
     controller.addListener(onscroll);
   }
   void onscroll(){
-    print(controller.offset);
+    final double currentOffset = controller.offset;
+    final double difference = currentOffset - previousOffset;
+    final bool isAtTop = controller.offset == controller.position.minScrollExtent;
+    final bool isAtBottom = controller.offset == controller.position.maxScrollExtent;
+
+    if (difference > 0) {
+    // User is scrolling down:
+    // content moves upward on the screen
+    movedDown += difference;
+    movedUp = 0.0;
+  } else if (difference < 0) {
+    // User is scrolling up:
+    // content moves downward on the screen
+    movedUp += -difference;
+    movedDown = 0.0;
   }
+  previousOffset= currentOffset;
+
+  setState(() {
+    if (isAtTop) {
+      op1 = 0.0;
+      op2 = 0.5;
+    } else if (isAtBottom) {
+      op1 = 0.5;
+      op2 = 0.0;
+    } else if(movedDown >= threshold) {
+      op1 = 0.4;
+      op2 = 0.0;
+    }
+    else if(movedUp >= threshold){
+      op1=0.0;
+      op2=0.4;
+    }
+  });
+  }
+  
+  
+
+
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -63,13 +107,36 @@ class _HomePageState extends State<HomePage> {
 
         Positioned(
           right: 16,
-          top: MediaQuery.of(context).size.height/2-90,
+          top: MediaQuery.of(context).size.height/1.4,
           child: Column(
                   
                   children: [
-                    FloatingActionButton(onPressed: (){}, child: Icon(Icons.arrow_upward),),
+                    Opacity(
+                      opacity: op1,
+                      child: FloatingActionButton(
+                        onPressed: (){
+                          controller.animateTo(
+                            controller.position.minScrollExtent, 
+                            duration: const Duration(milliseconds: 600), 
+                            curve: Curves.easeIn
+                            );
+                        }, 
+                        child: Icon(Icons.arrow_upward),
+                        ),
+                    ),
                     SizedBox(height: 15,),
-                    FloatingActionButton(onPressed: (){}, child: Icon(Icons.arrow_downward),)
+
+
+                    Opacity(
+                      opacity: op2,
+                      child: FloatingActionButton(onPressed: (){
+                        controller.animateTo(
+                          controller.position.maxScrollExtent, 
+                          duration: Duration(milliseconds: 600), 
+                          curve: Curves.easeIn
+                          );
+                      }, child: Icon(Icons.arrow_downward),),
+                    )
                   ],
                 ),
         ),
