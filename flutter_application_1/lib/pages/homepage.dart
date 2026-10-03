@@ -108,7 +108,7 @@ class _HomePageState extends State<HomePage> {
 
         Positioned(
           right: 16,
-          top: MediaQuery.of(context).size.height/1.4,
+          top: MediaQuery.of(context).size.height/1.26,
           child: Column(
                   
                   children: [
@@ -153,12 +153,13 @@ class Mainheader extends SliverPersistentHeaderDelegate {
   double get minExtent => 90;
 
 @override
-  double get maxExtent =>250;
+  double get maxExtent =>300;
 
 @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     final currentHeight = maxExtent - (shrinkOffset.clamp(0, maxExtent - minExtent));
     return Material(
+           
            elevation: overlapsContent ? 4:0,
            color: Colors.deepPurple,
             child: SizedBox(
