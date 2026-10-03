@@ -42,18 +42,18 @@ class _HomePageState extends State<HomePage> {
 
   setState(() {
     if (isAtTop) {
-      op1 = 0.0;
+      op1 = 0.3;
       op2 = 0.5;
     } else if (isAtBottom) {
       op1 = 0.5;
-      op2 = 0.0;
+      op2 = 0.3;
     } else if(movedDown >= threshold) {
-      op1 = 0.4;
-      op2 = 0.0;
+      op1 = 0.3;
+      op2 = 0.4;
     }
     else if(movedUp >= threshold){
-      op1=0.0;
-      op2=0.4;
+      op1=0.4;
+      op2=0.3;
     }
   });
   }
@@ -77,6 +77,7 @@ class _HomePageState extends State<HomePage> {
         children: [
          CustomScrollView(
           controller: controller,
+          physics: ClampingScrollPhysics(),
           slivers: [
             
             SliverPersistentHeader(
@@ -94,7 +95,7 @@ class _HomePageState extends State<HomePage> {
                     subtitle: const Text('Product description'),
                   );
                 },
-                childCount: 100
+                childCount: 300
               ) ,
               
             ),
@@ -149,16 +150,16 @@ class _HomePageState extends State<HomePage> {
 }
 class Mainheader extends SliverPersistentHeaderDelegate {
 @override
-  double get minExtent => 70;
+  double get minExtent => 90;
 
 @override
-  double get maxExtent =>200;
+  double get maxExtent =>250;
 
 @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     final currentHeight = maxExtent - (shrinkOffset.clamp(0, maxExtent - minExtent));
     return Material(
-           elevation: overlapsContent ? 3:0,
+           elevation: overlapsContent ? 4:0,
            color: Colors.deepPurple,
             child: SizedBox(
                 height: currentHeight,
