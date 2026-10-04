@@ -69,80 +69,98 @@ class _HomePageState extends State<HomePage> {
     controller.dispose();
     super.dispose();
   }
+
+  Future<void> handlerefresh()async{
+    await Future.delayed(const Duration(seconds: 2));
+    if (mounted) {
+      setState(() {
+        ///// / / / / 
+      });
+      
+    }
+  }
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
-      body: Stack(
-        children: [
-         CustomScrollView(
-          controller: controller,
-          physics: ClampingScrollPhysics(),
-          slivers: [
-            
-            SliverPersistentHeader(
-              pinned:true,
-              delegate: Mainheader(),
-            ),
-            SliverList(
-              delegate:SliverChildBuilderDelegate(
-                (context, index){
-                  return ListTile(
-                    leading: CircleAvatar(
-                      child: Text('${index + 1}'),
-                    ),
-                    title: Text('Product ${index + 1}'),
-                    subtitle: const Text('Product description'),
-                  );
-                },
-                childCount: 300
-              ) ,
+      body: LiquidPullToRefresh(
+        onRefresh: handlerefresh,
+        color: Colors.deepPurple[200],
+        height: 300,
+        backgroundColor: Colors.deepPurple,
+        animSpeedFactor: 3,
+        showChildOpacityTransition: true,
+        child: Stack(
+          children: [
+           CustomScrollView(
+            controller: controller,
+            physics: ClampingScrollPhysics(),
+            slivers: [
               
-            ),
+              SliverPersistentHeader(
+                pinned:true,
+                delegate: Mainheader(),
+              ),
+              SliverList(
+                delegate:SliverChildBuilderDelegate(
+                  (context, index){
+                    return ListTile(
+                      leading: CircleAvatar(
+                        child: Text('${index + 1}'),
+                      ),
+                      title: Text('Product ${index + 1}'),
+                      subtitle: const Text('Product description'),
+                    );
+                  },
+                  childCount: 300
+                ) ,
+                
+              ),
+              
+                 
             
-               
           
+            ],
+          ),
+        
+          Positioned(
+            right: 16,
+            top: MediaQuery.of(context).size.height/1.26,
+            child: Column(
+                    
+                    children: [
+                      Opacity(
+                        opacity: op1,
+                        child: FloatingActionButton(
+                          onPressed: (){
+                            controller.animateTo(
+                              controller.position.minScrollExtent, 
+                              duration: const Duration(milliseconds: 600), 
+                              curve: Curves.easeIn
+                              );
+                          }, 
+                          child: Icon(Icons.arrow_upward),
+                          ),
+                      ),
+                      SizedBox(height: 15,),
+        
+        
+                      Opacity(
+                        opacity: op2,
+                        child: FloatingActionButton(onPressed: (){
+                          controller.animateTo(
+                            controller.position.maxScrollExtent, 
+                            duration: Duration(milliseconds: 600), 
+                            curve: Curves.easeIn
+                            );
+                        }, child: Icon(Icons.arrow_downward),),
+                      )
+                    ],
+                  ),
+          ),
         
           ],
         ),
-
-        Positioned(
-          right: 16,
-          top: MediaQuery.of(context).size.height/1.26,
-          child: Column(
-                  
-                  children: [
-                    Opacity(
-                      opacity: op1,
-                      child: FloatingActionButton(
-                        onPressed: (){
-                          controller.animateTo(
-                            controller.position.minScrollExtent, 
-                            duration: const Duration(milliseconds: 600), 
-                            curve: Curves.easeIn
-                            );
-                        }, 
-                        child: Icon(Icons.arrow_upward),
-                        ),
-                    ),
-                    SizedBox(height: 15,),
-
-
-                    Opacity(
-                      opacity: op2,
-                      child: FloatingActionButton(onPressed: (){
-                        controller.animateTo(
-                          controller.position.maxScrollExtent, 
-                          duration: Duration(milliseconds: 600), 
-                          curve: Curves.easeIn
-                          );
-                      }, child: Icon(Icons.arrow_downward),),
-                    )
-                  ],
-                ),
-        ),
-
-        ],
       ),
 
     );
